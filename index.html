@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Seva Kendra - Customer Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --bg-light: #f3f4f6;
+            --text-dark: #1f2937;
+            --border: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .login-box h1 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .login-box p {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .google-btn:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            background: var(--bg-light);
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header-title h2 {
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .header-title p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-details {
+            display: none;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            background: white;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .stat-icon.blue { background: var(--primary); }
+        .stat-icon.green { background: var(--success); }
+        .stat-icon.orange { background: var(--warning); }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .form-card h3 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        label.required::after {
+            content: " *";
+            color: var(--danger);
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Table */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding-left: 40px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .badge-primary {
+            background: #dbeafe;
+            color: var(--primary);
+        }
+
+        .pagination {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 36px;
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Reports Section */
+        .report-filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .user-details {
+                display: block;
+                text-align: right;
+            }
+
+            .user-name {
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .user-email {
+                font-size: 12px;
+                color: #6b7280;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            margin: 0 auto 16px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="logo">ई</div>
+            <h1>E-Seva Kendra</h1>
+            <p>Customer Management System</p>
+            <p style="font-size: 13px; margin-bottom: 20px;">Secure cloud-based platform for managing customer services</p>
+            <button class="google-btn" onclick="handleGoogleLogin()">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Sign in with Google
+            </button>
+            <p style="font-size: 12px; margin-top: 20px; color: #9ca3af;">
+                🔒 Secure authentication via Google<br>
+                ☁️ All data stored securely in the cloud
+            </p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="header-logo">ई</div>
+                    <div class="header-title">
+                        <h2>E-Seva Kendra</h2>
+                        <p>Customer Management</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">User Name</div>
+                        <div class="user-email" id="userEmail">user@gmail.com</div>
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                            <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <div class="nav-content">
+                <button class="nav-tab active" onclick="switchTab('home')">🏠 Home</button>
+                <button class="nav-tab" onclick="switchTab('addCustomer')">➕ Add Customer</button>
+                <button class="nav-tab" onclick="switchTab('customers')">👥 All Customers</button>
+                <button class="nav-tab" onclick="switchTab('reports')">📊 Reports</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="homeSection" class="section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="todayCustomers">0</div>
+                                <div class="stat-label">Today's Customers</div>
+                            </div>
+                            <div class="stat-icon blue">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value">₹<span id="todayIncome">0</span></div>
+                                <div class="stat-label">Today's Income</div>
+                            </div>
+                            <div class="stat-icon green">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value">₹<span id="monthlyIncome">0</span></div>
+                                <div class="stat-label">This Month</div>
+                            </div>
+                            <div class="stat-icon orange">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="totalCustomers">0</div>
+                                <div class="stat-label">Total Customers</div>
+                            </div>
+                            <div class="stat-icon blue">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                    <path d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                                    <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <h3>
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15h9.286zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zM.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8H.8z"/>
+                        </svg>
+                        Quick Stats
+                    </h3>
+                    <p style="color: #6b7280; margin-bottom: 16px;">Summary of recent activity</p>
+                    <div style="background: var(--bg-light); padding: 16px; border-radius: 8px;">
+                        <p style="font-size: 14px; line-height: 1.6;">
+                            ✅ System is running smoothly<br>
+                            🔐 All data is securely stored in the cloud<br>
+                            📱 Accessible from any device, anywhere<br>
+                            ⚡ Real-time data synchronization enabled
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add Customer Section -->
+            <section id="addCustomerSection" class="section">
+                <div class="form-card">
+                    <h3>
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                        Add New Customer
+                    </h3>
+                    <form id="customerForm" onsubmit="handleAddCustomer(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="required">Customer Name / ग्राहक का नाम</label>
+                                <input type="text" id="customerName" required placeholder="Enter customer name">
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Phone Number / फोन नंबर</label>
+                                <input type="tel" id="customerPhone" required pattern="[0-9]{10}" placeholder="10-digit mobile number">
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Service / सेवा</label>
+                                <select id="customerService" required onchange="toggleOtherField()">
+                                    <option value="">Select Service</option>
+                                    <option value="Domicile Certificate">Domicile Certificate</option>
+                                    <option value="Non-Creamy Layer Certificate">Non-Creamy Layer Certificate</option>
+                                    <option value="Income Certificate">Income Certificate</option>
+                                    <option value="PF">PF</option>
+                                    <option value="Rent Agreement">Rent Agreement</option>
+                                    <option value="Aadhaar Correction">Aadhaar Correction</option>
+                                    <option value="Gazette">Gazette</option>
+                                    <option value="Voter ID">Voter ID</option>
+                                    <option value="GST Registration">GST Registration</option>
+                                    <option value="Shop Act">Shop Act</option>
+                                    <option value="Ration Card">Ration Card</option>
+                                    <option value="PAN Card">PAN Card</option>
+                                    <option value="Passport">Passport</option>
+                                    <option value="Police Verification">Police Verification</option>
+                                    <option value="Food Licence">Food Licence</option>
+                                    <option value="Driving Licence">Driving Licence</option>
+                                    <option value="Others">Others (अन्य)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Amount / राशि (₹)</label>
+                                <input type="number" id="customerAmount" required min="0" step="1" placeholder="Enter amount">
+                            </div>
+                            <div class="form-group full-width" id="otherServiceGroup" style="display: none;">
+                                <label class="required">Other Service Description / अन्य सेवा विवरण</label>
+                                <textarea id="otherService" placeholder="Please describe the service"></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display: flex; gap: 12px;">
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                </svg>
+                                Save Customer / सहेजें
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                </svg>
+                                Clear / रीसेट
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- All Customers Section -->
+            <section id="customersSection" class="section">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 style="margin: 0;">All Customers / सभी ग्राहक</h3>
+                        <div class="search-box">
+                            <svg class="search-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                            <input type="text" id="searchInput" placeholder="Search by name or phone..." oninput="searchCustomers()">
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sr. No.</th>
+                                    <th>Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Phone</th>
+                                    <th>Service</th>
+                                    <th>Amount</th>
+                                    <th>Created By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                <tr>
+                                    <td colspan="7" class="empty-state">
+                                        <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                        </svg>
+                                        <h4>No customers yet</h4>
+                                        <p>Start by adding your first customer</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reportsSection" class="section">
+                <div class="form-card">
+                    <h3>
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
+                        </svg>
+                        Reports & Analytics / रिपोर्ट
+                    </h3>
+                    <div class="report-filters">
+                        <div class="filter-group">
+                            <label>From Date</label>
+                            <input type="date" id="fromDate">
+                        </div>
+                        <div class="filter-group">
+                            <label>To Date</label>
+                            <input type="date" id="toDate">
+                        </div>
+                        <div class="filter-group">
+                            <label>Service</label>
+                            <select id="filterService">
+                                <option value="">All Services</option>
+                                <option value="Domicile Certificate">Domicile Certificate</option>
+                                <option value="Income Certificate">Income Certificate</option>
+                                <option value="PAN Card">PAN Card</option>
+                                <option value="Passport">Passport</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="generateReport()">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                </svg>
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-summary">
+                    <div class="summary-card">
+                        <div class="summary-value">₹<span id="reportTotal">0</span></div>
+                        <div class="summary-label">Total Collection</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="reportCustomers">0</div>
+                        <div class="summary-label">Total Customers</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">₹<span id="reportAverage">0</span></div>
+                        <div class="summary-label">Average Per Customer</div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 style="margin: 0;">Service-wise Breakdown</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Customers</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serviceBreakdownBody">
+                                <tr>
+                                    <td colspan="3" class="empty-state">
+                                        <p>Generate a report to see service breakdown</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+        <span id="successText">Success!</span>
+    </div>
+
+    <script>
+        // Simulated Cloud Database (Replace with Firebase/Backend)
+        let currentUser = null;
+        let customers = [];
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+
+        // Simulated Google Login
+        function handleGoogleLogin() {
+            // In production, use Firebase Authentication
+            // firebase.auth().signInWithPopup(provider)
+            
+            // Simulated login
+            const email = 'admin@gmail.com'; // This would come from Google OAuth
+            const name = 'Admin User';
+            
+            currentUser = {
+                email: email,
+                name: name,
+                avatar: name.charAt(0).toUpperCase()
+            };
+            
+            // Show dashboard
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            
+            // Update user info
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userEmail').textContent = email;
+            document.getElementById('userAvatar').textContent = currentUser.avatar;
+            
+            // Load data
+            loadCustomers();
+            updateStats();
+            showSuccess('Login successful! Welcome to E-Seva Kendra');
+        }
+
+        // Logout
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                document.getElementById('dashboard').classList.remove('active');
+                document.getElementById('loginPage').style.display = 'flex';
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            switch(tab) {
+                case 'home':
+                    document.getElementById('homeSection').classList.add('active');
+                    updateStats();
+                    break;
+                case 'addCustomer':
+                    document.getElementById('addCustomerSection').classList.add('active');
+                    break;
+                case 'customers':
+                    document.getElementById('customersSection').classList.add('active');
+                    displayCustomers();
+                    break;
+                case 'reports':
+                    document.getElementById('reportsSection').classList.add('active');
+                    setDefaultDates();
+                    break;
+            }
+        }
+
+        // Toggle Other Service Field
+        function toggleOtherField() {
+            const service = document.getElementById('customerService').value;
+            const otherGroup = document.getElementById('otherServiceGroup');
+            const otherField = document.getElementById('otherService');
+            
+            if (service === 'Others') {
+                otherGroup.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherGroup.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
+        }
+
+        // Add Customer
+        function handleAddCustomer(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            let service = document.getElementById('customerService').value;
+            const amount = parseFloat(document.getElementById('customerAmount').value);
+            const otherService = document.getElementById('otherService').value;
+            
+            // Validate phone
+            if (phone.length !== 10) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+            
+            // Use other service description if selected
+            if (service === 'Others' && otherService) {
+                service = `Others: ${otherService}`;
+            }
+            
+            const customer = {
+                id: Date.now(),
+                serialNo: customers.length + 1,
+                name: name,
+                phone: phone,
+                service: service,
+                amount: amount,
+                date: new Date().toISOString().split('T')[0],
+                createdBy: currentUser.email,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to "cloud" (in production, save to Firebase/Backend)
+            customers.push(customer);
+            saveToCloud();
+            
+            // Reset form
+            document.getElementById('customerForm').reset();
+            toggleOtherField();
+            
+            // Show success
+            showSuccess(`Customer "${name}" added successfully! ✅`);
+            
+            // Update stats
+            updateStats();
+        }
+
+        // Save to Cloud (Simulated)
+        function saveToCloud() {
+            // In production: firebase.firestore().collection('customers').add(customer)
+            localStorage.setItem('eseva_customers', JSON.stringify(customers));
+        }
+
+        // Load Customers
+        function loadCustomers() {
+            const saved = localStorage.getItem('eseva_customers');
+            if (saved) {
+                customers = JSON.parse(saved);
+            }
+        }
+
+        // Display Customers
+        function displayCustomers(filtered = null) {
+            const data = filtered || customers;
+            const tbody = document.getElementById('customersTableBody');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                            </svg>
+                            <h4>No customers found</h4>
+                            <p>${filtered ? 'Try a different search' : 'Start by adding your first customer'}</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
+            // Pagination
+            const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const pageData = data.slice(start, end);
+            
+            tbody.innerHTML = pageData.reverse().map(c => `
+                <tr>
+                    <td><strong>#${c.serialNo}</strong></td>
+                    <td>${formatDate(c.date)}</td>
+                    <td>${c.name}</td>
+                    <td>${c.phone}</td>
+                    <td><span class="badge badge-primary">${c.service}</span></td>
+                    <td><strong>₹${c.amount}</strong></td>
+                    <td style="font-size: 12px;">${c.createdBy}</td>
+                </tr>
+            `).join('');
+            
+            // Pagination buttons
+            if (totalPages > 1) {
+                let paginationHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                }
+                document.getElementById('pagination').innerHTML = paginationHTML;
+            } else {
+                document.getElementById('pagination').innerHTML = '';
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            displayCustomers();
+        }
+
+        // Search Customers
+        function searchCustomers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!query) {
+                displayCustomers();
+                return;
+            }
+            
+            const filtered = customers.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.phone.includes(query)
+            );
+            
+            currentPage = 1;
+            displayCustomers(filtered);
+        }
+
+        // Update Stats
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            
+            // Today's stats
+            const todayCustomers = customers.filter(c => c.date === today);
+            const todayIncome = todayCustomers.reduce((sum, c) => sum + c.amount, 0);
+            
+            // Monthly stats
+            const monthlyCustomers = customers.filter(c => c.date.startsWith(currentMonth));
+            const monthlyIncome = monthlyCustomers.reduce((sum, c) => sum + c.amount, 0);
+            
+            document.getElementById('todayCustomers').textContent = todayCustomers.length;
+            document.getElementById('todayIncome').textContent = todayIncome;
+            document.getElementById('monthlyIncome').textContent = monthlyIncome;
+            document.getElementById('totalCustomers').textContent = customers.length;
+        }
+
+        // Reports
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+            
+            document.getElementById('fromDate').value = firstDay;
+            document.getElementById('toDate').value = today;
+        }
+
+        function generateReport() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const serviceFilter = document.getElementById('filterService').value;
+            
+            let filtered = customers.filter(c => {
+                const inDateRange = c.date >= fromDate && c.date <= toDate;
+                const matchesService = !serviceFilter || c.service === serviceFilter;
+                return inDateRange && matchesService;
+            });
+            
+            // Calculate totals
+            const total = filtered.reduce((sum, c) => sum + c.amount, 0);
+            const count = filtered.length;
+            const average = count > 0 ? Math.round(total / count) : 0;
+            
+            document.getElementById('reportTotal').textContent = total;
+            document.getElementById('reportCustomers').textContent = count;
+            document.getElementById('reportAverage').textContent = average;
+            
+            // Service breakdown
+            const breakdown = {};
+            filtered.forEach(c => {
+                if (!breakdown[c.service]) {
+                    breakdown[c.service] = { count: 0, amount: 0 };
+                }
+                breakdown[c.service].count++;
+                breakdown[c.service].amount += c.amount;
+            });
+            
+            const tbody = document.getElementById('serviceBreakdownBody');
+            if (Object.keys(breakdown).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No data for selected period</td></tr>';
+            } else {
+                tbody.innerHTML = Object.entries(breakdown).map(([service, data]) => `
+                    <tr>
+                        <td><span class="badge badge-primary">${service}</span></td>
+                        <td>${data.count}</td>
+                        <td><strong>₹${data.amount}</strong></td>
+                    </tr>
+                `).join('');
+            }
+            
+            showSuccess('Report generated successfully!');
+        }
+
+        // Utility Functions
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function showSuccess(message) {
+            const el = document.getElementById('successMessage');
+            document.getElementById('successText').textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            loadCustomers();
+        });
+    </script>
+</body>
+</html>
